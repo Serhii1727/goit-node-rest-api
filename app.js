@@ -1,6 +1,20 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
+import mongoose from "mongoose";
+
+const DB_HOST =
+  "mongodb+srv://SerhiiKravchenko:t7jcicsisdGGs4eP@cluster0.su0m9l5.mongodb.net/db-contacts?retryWrites=true&w=majority&appName=Cluster0";
+
+mongoose
+  .connect(DB_HOST)
+  .then(() => {
+    console.log("Database connection successful");
+  })
+  .catch((error) => {
+    console.log(error.message);
+    process.exit(1);
+  });
 
 import contactsRouter from "./routes/contactsRouter.js";
 
