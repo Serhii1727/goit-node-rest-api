@@ -3,8 +3,7 @@ import morgan from "morgan";
 import cors from "cors";
 import mongoose from "mongoose";
 
-const DB_HOST =
-  "mongodb+srv://SerhiiKravchenko:t7jcicsisdGGs4eP@cluster0.su0m9l5.mongodb.net/db-contacts?retryWrites=true&w=majority&appName=Cluster0";
+const { DB_HOST } = process.env;
 
 mongoose
   .connect(DB_HOST)
