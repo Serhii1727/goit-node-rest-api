@@ -1,4 +1,5 @@
 import { Schema, model } from "mongoose";
+import Joi from "joi";
 
 const contactSchema = new Schema({
   name: {
@@ -17,9 +18,7 @@ const contactSchema = new Schema({
   },
 });
 
-export const Book = model("contact", contactSchema);
-
-import Joi from "joi";
+export const Contact = model("contact", contactSchema);
 
 const createContactSchema = Joi.object({
   name: Joi.string().required(),
