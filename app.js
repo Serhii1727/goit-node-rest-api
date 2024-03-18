@@ -1,8 +1,6 @@
 import express from "express";
 import morgan from "morgan";
 import cors from "cors";
-<<<<<<< Updated upstream
-=======
 import mongoose from "mongoose";
 import "dotenv/config";
 import contactsRouter from "./routes/contactsRouter.js";
@@ -19,7 +17,6 @@ mongoose
     console.log(error.message);
     process.exit(1);
   });
->>>>>>> Stashed changes
 
 const app = express();
 
@@ -39,6 +36,6 @@ app.use((err, req, res, next) => {
   res.status(status).json({ message });
 });
 
-app.listen(3000, () => {
+app.listen(PORT, () => {
   console.log("Server is running. Use our API on port: 3000");
 });
