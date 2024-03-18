@@ -2,10 +2,17 @@ import express from "express";
 import contactsControllers from "../controllers/contactsControllers.js";
 
 import validateBody from "../helpers/validateBody.js";
+<<<<<<< Updated upstream
 import {
   createContactSchema,
   updateContactSchema,
 } from "../schemas/contactsSchemas.js";
+=======
+import { shemas } from "../models/contact.js";
+
+const { createContactSchema, updateContactSchema, updateFavoriteSchema } =
+  shemas;
+>>>>>>> Stashed changes
 
 const contactsRouter = express.Router();
 
