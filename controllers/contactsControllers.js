@@ -2,8 +2,15 @@ import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import { Contact } from "../models/contact.js";
 
-const getAllContacts = async (_, res) => {
-  const allContacts = await Contact.find();
+const getAllContacts = async (req, res) => {
+  const { _id: owner } = req.user;
+  const { page = 1, limit = 20, favorite } = req.query;
+  const skip = (page - 1) * 20;
+  const allContacts = await Contact.find({ owner }, null, {
+    skip,
+    limit,
+  });
+
   res.json(allContacts);
 };
 
@@ -28,8 +35,9 @@ const deleteContact = async (req, res) => {
 };
 
 const createContact = async (req, res) => {
+  const { _id: owner } = req.user;
   const { name, email, phone } = req.body;
-  const newContact = await Contact.create({ name, email, phone });
+  const newContact = await Contact.create({ name, email, phone, owner });
   res.status(201).json(newContact);
 };
 
