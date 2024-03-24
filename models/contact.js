@@ -16,6 +16,10 @@ const contactSchema = new Schema({
     type: Boolean,
     default: false,
   },
+  owner: {
+    type: Schema.Types.ObjectId,
+    ref: "user",
+  },
 });
 
 export const Contact = model("contact", contactSchema);
@@ -41,7 +45,7 @@ const updateFavoriteSchema = Joi.object({
   favorite: Joi.boolean().required(),
 });
 
-export const shamas = {
+export const shemas = {
   createContactSchema,
   updateContactSchema,
   updateFavoriteSchema,
