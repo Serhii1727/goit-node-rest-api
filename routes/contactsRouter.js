@@ -4,6 +4,7 @@ import isValidId from "../middlewares/isValidId.js";
 import authenticate from "../middlewares/authenticate.js";
 import validateBody from "../helpers/validateBody.js";
 import { shemas } from "../models/contact.js";
+import upload from "../middlewares/upload.js";
 
 const { createContactSchema, updateContactSchema, updateFavoriteSchema } =
   shemas;
@@ -20,6 +21,7 @@ contactsRouter.delete("/:id", isValidId, contactsControllers.deleteContact);
 
 contactsRouter.post(
   "/",
+  upload.single("avatar"),
   validateBody(createContactSchema),
   contactsControllers.createContact
 );

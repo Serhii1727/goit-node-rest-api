@@ -49,6 +49,7 @@ const login = async (req, res) => {
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
+  console.log(token);
 
   const updateUser = (filter, data) => User.findByIdAndUpdate(filter, data);
 
