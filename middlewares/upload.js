@@ -2,13 +2,13 @@ import multer from "multer";
 import path from "path";
 import HttpError from "../helpers/HttpError.js";
 
-const destination = path.resolve("temp");
+const destination = path.resolve("tmp");
 
 const storage = multer.diskStorage({
   destination,
   filename: (req, file, cb) => {
     const uniqueSuffix = Date.now() + "-" + Math.round(Math.random() * 1e9);
-    const filename = file.originalname + "-" + uniqueSuffix;
+    const filename = uniqueSuffix + "-" + file.originalname;
     cb(null, filename);
   },
 });

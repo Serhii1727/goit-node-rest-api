@@ -1,13 +1,19 @@
 import bcrypt from "bcrypt";
+import Jimp from "jimp";
+import gravatar from "gravatar";
+import fs from "fs/promises";
+import path from "path";
 import jwt from "jsonwebtoken";
 import HttpError from "../helpers/HttpError.js";
 import ctrlWrapper from "../helpers/ctrlWrapper.js";
 import { User } from "../models/user.js";
 
 const { JWT_SECRET } = process.env;
+const avatarPath = path.resolve("public", "avatars");
 
 const register = async (req, res) => {
   const { email } = req.body;
+  const url = gravatar.url(email);
 
   const user = await User.findOne({ email });
 
@@ -15,7 +21,11 @@ const register = async (req, res) => {
     throw HttpError(409, "Email in use");
   }
   const hashPassword = await bcrypt.hash(req.body.password, 10);
-  const newUser = await User.create({ ...req.body, password: hashPassword });
+  const newUser = await User.create({
+    ...req.body,
+    avatarURL: url,
+    password: hashPassword,
+  });
 
   res.status(201).json({
     user: {
@@ -49,7 +59,6 @@ const login = async (req, res) => {
   };
 
   const token = jwt.sign(payload, JWT_SECRET, { expiresIn: "23h" });
-  console.log(token);
 
   const updateUser = (filter, data) => User.findByIdAndUpdate(filter, data);
 
@@ -65,7 +74,8 @@ const login = async (req, res) => {
 };
 
 const getCurrent = async (req, res) => {
-  const { email } = req.user;
+  const { email, _id: id } = req.user;
+  console.log(id);
 
   res.json({
     email,
@@ -75,6 +85,7 @@ const getCurrent = async (req, res) => {
 
 const logout = async (req, res) => {
   const { _id: id } = req.user;
+
   const updateUser = (filter, data) => User.findByIdAndUpdate(filter, data);
 
   await updateUser({ _id: id }, { token: "" });
@@ -82,9 +93,37 @@ const logout = async (req, res) => {
   res.status(204).json();
 };
 
+const updateAvatar = async (req, res) => {
+  const { _id: id } = req.user;
+
+  if (!req.file) {
+    throw HttpError(401, "Not authorized");
+  }
+  console.log(req.file);
+  const { path: oldPath, filename } = req.file;
+
+  const image = await Jimp.read(oldPath);
+  image.resize(250, 250).write(oldPath);
+
+  console.log(image);
+
+  const newPath = path.join(avatarPath, filename);
+  await fs.rename(oldPath, newPath);
+
+  const avatar = path.join("public", "avatars", filename);
+
+  const updateUser = (filter, data) => User.findByIdAndUpdate(filter, data);
+  await updateUser({ _id: id }, { avatarURL: avatar });
+
+  res.status(200).json({
+    avatarURL: avatar,
+  });
+};
+
 export default {
   register: ctrlWrapper(register),
   login: ctrlWrapper(login),
   getCurrent: ctrlWrapper(getCurrent),
   logout: ctrlWrapper(logout),
+  updateAvatar: ctrlWrapper(updateAvatar),
 };
