@@ -40,3 +40,5 @@ app.use((err, req, res, next) => {
 app.listen(PORT, () => {
   console.log("Server is running. Use our API on port: 3000");
 });
+
+export default app;
