@@ -96,10 +96,6 @@ const logout = async (req, res) => {
 const updateAvatar = async (req, res) => {
   const { _id: id } = req.user;
 
-  if (!req.file) {
-    throw HttpError(401, "Not authorized");
-  }
-  console.log(req.file);
   const { path: oldPath, filename } = req.file;
 
   const image = await Jimp.read(oldPath);
@@ -110,8 +106,7 @@ const updateAvatar = async (req, res) => {
 
   const avatar = path.join("public", "avatars", filename);
 
-  const updateUser = (filter, data) => User.findByIdAndUpdate(filter, data);
-  await updateUser({ _id: id }, { avatarURL: avatar });
+  await User.findByIdAndUpdate({ _id: id }, { avatarURL: avatar });
 
   res.status(200).json({
     avatarURL: avatar,
