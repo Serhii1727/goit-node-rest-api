@@ -5,7 +5,11 @@ import validateBody from "../helpers/validateBody.js";
 import authenticate from "../middlewares/authenticate.js";
 import upload from "../middlewares/upload.js";
 
-const { createSignupUserSchema, createSigninUserSchema } = schemas;
+const {
+  createSignupUserSchema,
+  createSigninUserSchema,
+  createUserEmailSchema,
+} = schemas;
 
 const authRouter = express.Router();
 
@@ -14,6 +18,14 @@ authRouter.post(
   validateBody(createSignupUserSchema),
   authController.register
 );
+
+authRouter.post(
+  "/verify",
+  validateBody(createUserEmailSchema),
+  authController.resendVerify
+);
+
+authRouter.get("/verify/:verificationToken", authController.verify);
 
 authRouter.post(
   "/login",
